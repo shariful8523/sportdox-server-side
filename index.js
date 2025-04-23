@@ -45,19 +45,56 @@ async function run() {
 
     // Get a product id
 
-    app.get('/products/:id', async(req, res) => {
+    app.get('/products/:id', async (req, res) => {
       const id = req.params.id;
-      const query = {_id: new ObjectId(id)}
+      const query = { _id: new ObjectId(id) }
       const product = await productCollection.findOne(query);
       res.send(product);
     })
 
+    // product update 
+
+    app.get('/products/:id', async (req, res) => {
+      const id = req.params.id;
+      const query = { _id: new ObjectId(id) };
+      const product = await productCollection.findOne(query);
+      res.send(product);
+    })
+
+    app.put('/products/:id', async (req, res) => {
+      const id = req.params.id;
+      const filter = { _id: new ObjectId(id) };
+      const updatedProduct = req.body;
+
+      const updateDoc = {
+        $set: {
+          image: updatedProduct.image,
+          itemName: updatedProduct.itemName,
+          category: updatedProduct.category,
+          price: updatedProduct.price,
+          rating: updatedProduct.rating,
+          stock: updatedProduct.stock,
+          processingTime: updatedProduct.processingTime,
+          customization: updatedProduct.customization,
+          description: updatedProduct.description,
+          userEmail: updatedProduct.userEmail,
+          userName: updatedProduct.userName
+        }
+      };
+
+      const result = await productCollection.updateOne(filter, updateDoc);
+
+      res.send({
+        success: true,
+        modified: result.modifiedCount > 0
+      });
+    });
     // product delete
 
-    app.delete('/products/:id', async(req, res)=>{
+    app.delete('/products/:id', async (req, res) => {
       const id = req.params.id;
       console.log('please delete this product ', id);
-      const query = {_id: new ObjectId(id)}
+      const query = { _id: new ObjectId(id) }
 
       const result = await productCollection.deleteOne(query);
       res.send(result)
@@ -71,7 +108,7 @@ async function run() {
       res.send(result);
     });
 
-   
+
 
     await client.db("admin").command({ ping: 1 });
     console.log(" Connected to MongoDB");
