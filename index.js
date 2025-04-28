@@ -36,6 +36,9 @@ async function run() {
     const database = client.db("productsDB");
     const productCollection = database.collection("products");
 
+    const userCollection = client.db('productsDB').collection('users');
+
+
     //  Get all products
     app.get('/products', async (req, res) => {
       const cursor = productCollection.find();
@@ -107,6 +110,18 @@ async function run() {
       const result = await productCollection.insertOne(product);
       res.send(result);
     });
+
+
+
+
+    // User related apis 
+
+    app.post('/users', async(req, res) => {
+      const newUser = req.body;
+      console.log('creating new user ', newUser);
+      const result = await userCollection.insertOne(newUser);
+      res.send(result);
+    })
 
 
 
